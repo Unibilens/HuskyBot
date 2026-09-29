@@ -1,0 +1,21 @@
+{
+  "botAuth": "",
+  "botId": "",
+  "proxy": "",
+  "dblApiKey": "",
+  "patreonAccessToken": "",
+  "managerApiAuth": "",
+  "managerApiHost": "",
+  "managerHost": "",
+  "managerApiPort": 3000,
+  "managerDb": {
+    "dbUser": "",
+    "dbPassword": "",
+    "dbName": ""
+  },
+  "shardDb": {
+    "dbUser": "",
+    "dbPassword": "",
+    "dbName": ""
+  }
+}

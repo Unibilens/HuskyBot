@@ -1,0 +1,157 @@
+import {
+  ActionRowBuilder,
+  type AutocompleteInteraction,
+  ButtonBuilder,
+  ButtonStyle,
+  type DiscordAPIError,
+  EmbedBuilder,
+  Events,
+  type Interaction,
+  MessageFlags,
+  RESTJSONErrorCodes,
+} from 'discord.js';
+import { outdent } from 'outdent';
+import { event } from '#bot/util/registry/event.ts';
+import { registry } from '#bot/util/registry/registry.ts';
+import { config } from '#const/config.ts';
+import { getGuildModel } from '../models/guild/guildModel.ts';
+import { getUserModel } from '../models/userModel.ts';
+import { askForPremium } from '../util/askForPremium.ts';
+
+export default event(Events.InteractionCreate, async (interaction) => {
+  try {
+    if (!interaction.inCachedGuild()) {
+      if (interaction.isAutocomplete()) {
+        await interaction.respond([]);
+        return;
+      }
+
+      if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+        await interaction.reply({
+          content: "❌ This bot's commands can only be used inside a server.",
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+      return;
+    }
+
+    if (interaction.isAutocomplete()) {
+      await registry.handleAutocomplete(interaction);
+      return;
+    }
+
+    if (await executeBans(interaction)) return;
+
+    if (!interaction.channel) {
+      interaction.client.logger.error(interaction, 'interaction is lacking channel');
+      return;
+    }
+
+    if (interaction.isMessageComponent()) {
+      await registry.handleComponent(interaction);
+      return;
+    }
+    if (interaction.isModalSubmit()) {
+      await registry.handleComponent(interaction);
+      return;
+    }
+    if (interaction.isContextMenuCommand()) {
+      interaction.client.botShardStat.commandsTotal++;
+      interaction.client.logger.debug(
+        `Context command ${interaction.commandName} used by ${interaction.user.username} in guild ${interaction.guild.name}`,
+      );
+
+      await registry.handleCommand(interaction);
+      return;
+    }
+    if (interaction.isChatInputCommand()) {
+      interaction.client.botShardStat.commandsTotal++;
+
+      interaction.client.logger.debug(
+        `/${interaction.commandName} used by ${interaction.user.username} in guild ${interaction.guild.name}`,
+      );
+
+      await registry.handleCommand(interaction);
+      await askForPremium(interaction);
+      return;
+    }
+  } catch (e) {
+    try {
+      if (interaction.isAutocomplete()) return;
+
+      const content = outdent`
+        There was an error while executing this command! 
+        If this error persists, contact **deydays**.`;
+
+      if (interaction.replied) {
+        await interaction.followUp({ content, flags: MessageFlags.Ephemeral });
+      } else if (interaction.deferred) {
+        await interaction.editReply({ content });
+      } else {
+        await interaction.reply({ content, flags: MessageFlags.Ephemeral });
+      }
+    } catch (_e2) {
+      const e2 = _e2 as DiscordAPIError | Error;
+      if ('code' in e2 && e2.code === RESTJSONErrorCodes.UnknownInteraction)
+        interaction.client.logger.debug('Unknown interaction while responding to command error');
+      else
+        interaction.client.logger.error(
+          { err: e2, interaction },
+          'Error while responding to command error',
+        );
+    }
+    interaction.client.logger.warn({ err: e, interaction }, 'Command error');
+  }
+});
+
+async function executeBans(
+  interaction: Exclude<Interaction<'cached'>, AutocompleteInteraction<'cached'>>,
+): Promise<boolean> {
+  const cachedGuild = await getGuildModel(interaction.guild);
+
+  if (cachedGuild.db.isBanned) {
+    interaction.client.logger.debug(`Banned guild ${interaction.guild.id} used interaction.`);
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setDescription('❌ This server been blacklisted from the bot.')
+          .setColor(0xe7000b),
+      ],
+      components: [
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setStyle(ButtonStyle.Link)
+            .setURL(config.supportServer.invite)
+            .setLabel('Appeal'),
+        ),
+      ],
+    });
+    await interaction.guild.leave();
+    return true;
+  }
+
+  const cachedUser = await getUserModel(interaction.user);
+
+  if (cachedUser.db.isBanned) {
+    interaction.client.logger.debug(`Banned user ${interaction.user.id} used interaction.`);
+    await interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setDescription('❌ You have been blacklisted from the bot.')
+          .setColor(0xe7000b),
+      ],
+      components: [
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setStyle(ButtonStyle.Link)
+            .setURL(config.supportServer.invite)
+            .setLabel('Appeal'),
+        ),
+      ],
+      flags: MessageFlags.Ephemeral,
+    });
+    return true;
+  }
+
+  return false;
+}

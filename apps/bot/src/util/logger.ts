@@ -1,0 +1,13 @@
+import pino from 'pino';
+
+const logger = pino({
+  base: null,
+  level:
+    process.env.LOG_LEVEL ||
+    (process.env.SUPPRESS_LOGGING === 'true' ? 'silent' : 'warn'),
+});
+
+export default logger;
+
+logger.trace('Logger initialized.');
+logger.trace({ env: process.env }, 'Environment');

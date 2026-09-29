@@ -1,0 +1,42 @@
+import { PermissionFlagsBits, MessageFlags } from 'discord.js';
+import { command } from '#bot/commands.ts';
+import { getGuildModel } from '../../models/guild/guildModel.ts';
+
+export default command({
+  name: 'config-xp xp-per',
+  async execute({ interaction, options, t }) {
+    if (
+      !interaction.channel ||
+      !interaction.member.permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageGuild)
+    ) {
+      await interaction.reply({ content: t('missing.manageServer'), flags: MessageFlags.Ephemeral });
+      return;
+    }
+
+    const items = {
+      xpPerTextMessage: options.message,
+      xpPerVoiceMinute: options.voiceminute,
+      xpPerVote: options.vote,
+      xpPerInvite: options.invite,
+    };
+
+    if (Object.values(items).every((x) => x === undefined)) {
+      await interaction.reply({ content: t('missing.option'), flags: MessageFlags.Ephemeral });
+      return;
+    }
+
+    const cachedGuild = await getGuildModel(interaction.guild);
+    await cachedGuild.upsert(items);
+
+    await interaction.reply({
+      embeds: [
+        {
+          author: { name: t('config-xp.xpValues') },
+          color: 0x36608e,
+          description: t('config-xp.modifiedXPValues', cachedGuild.db),
+        },
+      ],
+      flags: MessageFlags.Ephemeral,
+    });
+  },
+});

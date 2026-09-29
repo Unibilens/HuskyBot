@@ -1,0 +1,98 @@
+name: ActivityRank
+
+configs:
+  config:
+    file: ./config/config.json
+
+secrets:
+  keys:
+    file: ./config/keys.json
+
+services:
+  db:
+    container_name: Database
+    image: mysql:8.4
+    restart: always
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    volumes:
+      - ./packages/database/init/my.cnf:/etc/mysql/my.cnf
+      - ./packages/database/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  proxy:
+    container_name: Proxy
+    image: ghcr.io/twilight-rs/http-proxy:metrics
+    restart: always
+    environment:
+      # DISCORD_TOKEN is required but the Authorization header should be used to supply the token.
+      - DISCORD_TOKEN=__required__
+    ports:
+      - "3001:80"
+
+  bot:
+    container_name: Bot
+    restart: always
+    build:
+      context: .
+      dockerfile: apps/bot/Dockerfile
+    pull_policy: build
+    image: "aktifim/bot:dev"
+    ports:
+      - "3010:3010"
+    environment:
+      - LOG_LEVEL=warn
+    configs:
+      - config
+    secrets:
+      - keys
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    container_name: Migrate
+    image: "aktifim/api:dev"
+    depends_on:
+      db:
+        condition: service_healthy
+    secrets:
+      - keys
+    volumes:
+      - ./migrate.mjs:/app/migrate.mjs
+    command: sh -c "KEYS_JSON=$$(cat /run/secrets/keys) node /app/migrate.mjs"
+    restart: "no"
+
+  api:
+    container_name: API
+    restart: always
+    init: true
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    pull_policy: build
+    image: "aktifim/api:dev"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    links:
+      - db
+    ports:
+      - "3000:3000"
+    secrets:
+      - keys
+    configs:
+      - config
+
+volumes:
+  db-data:

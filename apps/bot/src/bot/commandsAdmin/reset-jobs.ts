@@ -1,0 +1,33 @@
+import { AttachmentBuilder, type InteractionReplyOptions, MessageFlags } from 'discord.js';
+import { command } from '#bot/commands.ts';
+import { RESET_JOBS, RESET_QUEUE } from '#bot/models/resetModel.ts';
+import { HELPSTAFF_ONLY } from '#bot/util/predicates.ts';
+
+export default command({
+  predicate: HELPSTAFF_ONLY,
+  name: 'reset-jobs',
+  async execute({ interaction, options }) {
+    const useFull = options.full ?? false;
+    const search = options.search;
+
+    let content: string;
+    if (search) {
+      const job = [...RESET_JOBS].find((job) => job.guild.id === search);
+      content = `**Reset information: **${job ? JSON.stringify({ ...job, guild: search }, null, 2) : '`No job running in guild`'}`;
+    } else {
+      content = `${RESET_QUEUE.remaining} remaining jobs in queue. ${RESET_JOBS.size} cached jobs.\n`;
+    }
+
+    const res: InteractionReplyOptions = { content, flags: options.eph ? MessageFlags.Ephemeral : undefined };
+
+    if (useFull) {
+      res.files = [
+        new AttachmentBuilder(Buffer.from(JSON.stringify([...RESET_JOBS], null, 2), 'utf8'), {
+          name: 'reset-jobs.json',
+        }),
+      ];
+    }
+
+    await interaction.reply(res);
+  },
+});

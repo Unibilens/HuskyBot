@@ -1,0 +1,226 @@
+[[faq]]
+name = "¿Cómo obtengo el ID de un rol, canal o usuario?"
+value = """
+1. Ve a tus ajustes de usuario en Discord. Bajo "Ajustes de la aplicación", selecciona la pestaña "Avanzado". 
+2. Activa el "Modo Desarrollador". 
+3. Ve al rol, canal o usuario del que quieras encontrar el ID. 
+4. Haz clic derecho sobre él y selecciona "Copiar ID"."""
+
+[[faq]]
+name = "Mi bot no responde a los comandos, tampoco muestra ningún comando ni me da ningún error."
+value = """
+* Revisa el lado derecho de Discord para ver si el bot está en línea (si no, puede que esté reiniciándose).
+* Intenta ejecutar `/ping`.
+* Asegúrate de que el bot tenga todos los permisos de rol necesarios en el servidor.
+* Asegúrate de que el bot tenga todos los permisos de rol necesarios en la configuración del canal.
+* Verifica si has desactivado los comandos slash en ciertos canales, vía **Server Settings ❯ Integrations ❯ Husky**.
+* Hay un límite de 50 bots en un servidor. Cualquier bot adicional no mostrará sus comandos de barra.
+
+Si el bot muestra "an error occured", por favor abre un ticket de ayuda en el servidor de soporte.
+
+Si el bot muestra "application timed out", por favor inténtalo de nuevo más tarde.
+Podría ser un shard caído o un reinicio. Si sigue sin funcionar, abre un ticket de ayuda.
+"""
+
+[[faq]]
+name = "¿Cómo cambio la configuración de xp?"
+value = """
+> `/config-xp xp-per`
+> `/config-xp bonus-xp-per`
+> `/config-server cooldown`
+
+https://i.imgur.com/Cq1701X.gif"""
+
+[[faq]]
+name = "¿Cuál es el factor de nivel?"
+value = """
+El factor de nivel determina qué tan rápido se vuelve más difícil subir de nivel. 
+Cada nivel requiere `levelfactor` más de XP para alcanzarlo que el anterior.
+
+Ejecuta `/serverinfo type:levels`.
+El primer número es la cantidad de XP necesaria para alcanzar el siguiente nivel (el número entre paréntesis es el total de XP acumulado necesario).
+
+Calculadora (¡BETA!):
+https://www.calconic.com/calculator-widgets/ar-calculator-3-0/6701722ecb6756002ab32b5d?layouts=true
+"""
+
+[[faq]]
+name = "Todo sobre los roles de nivel"
+value = """
+* Para añadir un rol usa `/config-role levels` y completa los campos requeridos.
+* Para cambiar el nivel usa el comando para asignar/desasignar niveles nuevamente pero con el nivel que desees.
+* Para eliminarlo, pon el nivel en `0`.
+* Para ver tus levelroles, escribe `/serverinfo` y selecciona la pestaña *Roles*.
+
+Si los roles no se asignan al subir de nivel:
+> Asegúrate de que el rol Husky esté por encima de todos los levelroles en la jerarquía de roles.
+
+¿Cuándo se asignan los roles?
+> Se asignan cuando la persona sube de nivel nuevamente. Esto puede suceder al recibir suficiente XP o si un administrador otorga XP extra.
+
+VÍDEO: https://youtu.be/CUEkM2S7SeY"""
+
+[[faq]]
+name = "¿Es posible usar comandos de administrador sin permisos de administrador?"
+value = """
+Sí. Los usuarios necesitarán permisos de GESTIONAR SERVIDOR para poder usar comandos de administrador. 
+Estos permisos se pueden modificar en **Configuración del Servidor ❯ Integraciones ❯ Husky**"""
+
+[[faq]]
+name = "¿Solo hay 13 niveles y 12 usuarios principales?"
+value = """
+Hay un número ilimitado de niveles. 13 es el número predeterminado que se muestra. 
+Usa `/serverinfo`, selecciona **Levels** o **Roles** y usa las flechas para navegar.
+
+Si quieres aumentar o disminuir la cantidad mostrada, usa el comando `/config-server entries-per-page` y escribe un número entre 4 y 20.
+Esto afecta la cantidad de entradas que se muestran en `/serverinfo` y `/top`."""
+
+[[faq]]
+name = "¿Existe una tarjeta de rango?"
+value = "Una tarjeta de rango es una función planeada para el futuro."
+
+[[faq]]
+name = "El bot no otorga XP."
+value = """
+* Asegúrate de que el bot tenga permisos para leer en los canales. 
+-# La mejor forma de probarlo es darle al bot el permiso de **Administrador**. Si así se soluciona, es un problema de configuración de permisos en tu servidor.
+
+* Verifica si tienes un rol sin XP: `/serverinfo` ❯ **NoXP Roles**. 
+* Verifica si el canal es un canal sin XP: `/serverinfo` ❯ **NoXP Channels**. 
+* Si el canal es de voz: el bot actualiza el tiempo de voz cada 0.1 horas (6 min). 
+* El XP de texto se actualiza cada 1 minuto. 
+* Asegúrate de no haber desactivado el tipo específico de XP; revisa con `/serverinfo`."""
+
+[[faq]]
+name = "Todo sobre 🏆 XP adicional"
+value = """
+Para dar/quitar XP adicional, usa `/bonus role` o `/bonus member`. 
+En `change` introduces el valor que quieres dar o quitar. 
+Introduce un número positivo para dar XP adicional. 
+Introduce un número negativo (ej. -500) para quitar XP adicional.
+
+No puedes dar niveles, solo XP. El máximo ajustable es de 1,000,000 XP.
+
+## Bonustime 
+Bonustime es una función donde, por un tiempo limitado, todos los participantes del servidor ganan XP adicional por sus interacciones.
+
+Configura tus valores de XP por interacción (se suman a la configuración predeterminada de XP, ¡NO se multiplican!) con `/config-bonus xp-per`. 
+Inicia tu bonustime con `/config-xp bonustime`."""
+
+[[faq]]
+name = "¿Cómo configuro niveles solo para voz/texto/invitaciones/me gusta?"
+value = """
+Puedes desactivar el XP por mensajes de texto, XP por voz, XP por invitaciones o XP por votos positivos con `/config-server set`. 
+Si un icono está en verde, está habilitado.
+
+## Solo nivelación por voz 
+Algunas personas quieren configurar el bot solo para XP por voz.
+
+1. Desactiva todos los demás módulos con `/config-server set`.
+
+2. Si necesitas tiempos específicos de voz, revisa nuestra calculadora *(beta)*: 
+https://www.calconic.com/calculator-widgets/ar-calculator-3-0/6701722ecb6756002ab32b5d?layouts=true
+
+Puede que necesites cambiar tu **levelfactor** o **XP por minuto de voz**: 
+`/config-xp levelfactor` 
+`/config-xp xp-per`
+
+3. Configura tus levelroles; consulta FAQ 5. 
+https://i.imgur.com/u9fMhx5.gif"""
+
+[[faq]]
+name = "No estoy recibiendo mensajes de subida de nivel."
+value = """
+1. Usa `/config-server set` y selecciona **Notify via DM** o **Notify Last Active Channel**, o usa `/config-channel` y configúralo como **Levelup Channel**.
+
+2. Configura el mensaje de subida de nivel ejecutando `/config-messages`, elige **Levelup Message** y luego escribe tu mensaje.
+
+Asegúrate de que el bot tenga permisos para enviar embeds, mensajes y adjuntar archivos en el canal elegido."""
+
+[[faq]]
+name = "¿Qué son los votos?"
+value = """
+Los votos son una forma para que los usuarios otorguen XP a otro usuario. 
+Un usuario puede votar positivamente a otro usando el comando `/member upvote`, haciendo clic derecho y seleccionando **Apps ❯ Upvote**, o reaccionando con un emoji específico si la votación por reacciones está activada en el servidor.
+
+Para activar la votación por reacciones en tu servidor, usa `/config-server set` y selecciona **Reaction Vote**. 
+Puedes cambiar el tiempo de espera entre votos con `/config-server cooldown`. 
+Puedes cambiar el emoji y nombre del voto con `/config-server vote`.
+
+Puedes obtener más poder de voto suscribiéndote a los niveles de [Patreon](https://www.patreon.com/rapha01/membership)."""
+
+[[faq]]
+name = "¿Puedo evitar que usuarios silenciados, con micrófono apagado o en modo solo ganen XP en los canales de voz?"
+value = """
+Sí. Ejecuta `/config-server set` y modifica las opciones **Allow Muted XP**, **Allow Deafened XP** y **Allow Solo XP**.
+
+Los bots no se cuentan como usuarios al contabilizar los usuarios en un canal de voz."""
+
+[[faq]]
+name = "¿Cuándo se reinician las estadísticas mensuales, semanales y diarias?"
+value = """
+Diarias: <t:1727395200:t>  
+Semanales: <t:1727397000:t>  
+Mensuales: <t:1727398800:t>  
+Anuales: <t:1727400600:t>  
+
+**Solo se reinician las estadísticas acumuladas en ese periodo. ¡No se reinician las estadísticas acumuladas de por vida!**"""
+
+[[faq]]
+name = "¿Por qué ya no se actualiza mi tiempo en voz?"
+value = """
+Lo más probable es que solo necesites desconectarte y volver a conectarte a cualquier canal de voz, esperar unos minutos y luego revisar tus estadísticas nuevamente.
+
+Si estás usando otro bot que crea canales de voz temporales, esto puede afectar el seguimiento de Husky.
+
+La primera actualización del XP de voz ocurre después de 12 minutos (0.2 horas) y luego cada 6 minutos (0.1 horas)."""
+
+[[faq]]
+name = "¿Cómo funciona el XP por invitaciones?"
+value = """
+Puedes establecer a una persona como tu invitante usando el comando `/inviter`. 
+Ambos obtienen 1 Invitación (✉️) en sus estadísticas y una cantidad fija de XP. 
+Para comprobar a quién tienes configurado como invitante, simplemente ejecuta `/memberinfo`. 
+
+**Esta es una decisión única. Una vez configurado, solo un reinicio completo de los Invitadores del servidor puede revertirlo.**"""
+
+[[faq]]
+name = "¿Habrá un panel de control?"
+value = "Se planea un panel de control y se está trabajando en ello, pero no podemos dar una fecha estimada."
+
+[[faq]]
+name = "Acerca de los niveles de Patreon."
+value = """
+Nivel 1:
+* Reduce el tiempo de espera de `/stats` y `/top` de 5 minutos a 60 segundos para ti.
+* Sin anuncios para ti en todos los servidores en los que estés.
+* Tu poder de votos (upvote) se incrementa a 2x.
+* Soporte premium.
+
+Nivel 2:
+* Reduce el tiempo de espera de `/stats` y `/top` de 5 minutos a 5 segundos para ti.
+* Sin anuncios para ti en todos los servidores en los que estés.
+* Tu poder de votos (upvote) se incrementa a 3x.
+* Soporte premium.
+* Los reportes de errores y solicitudes de funciones tienen mayor prioridad.
+
+Nivel 3:
+* Reduce el tiempo de espera de `/stats` y `/top` de 5 minutos a 5 segundos para ti.
+* Reduce el tiempo de espera de `/stats` y `/top` de 5 minutos a 30 segundos para todos los miembros en todos tus servidores. **Debes ser el propietario del servidor.**
+* Sin anuncios para ti en todos los servidores en los que estés.
+* Tu poder de votos (upvote) se incrementa a 4x.
+* Soporte premium.
+* Los reportes de errores y solicitudes de funciones tienen mayor prioridad."""
+
+[[faq]]
+name = "¿En qué estáis trabajando?"
+value = "Puedes consultar nuestro [Trello](https://trello.com/b/MuFiCuJg/activityrank-planning) para ver todas las funciones sugeridas, los errores informados y en qué estamos trabajando actualmente."
+
+[[faq]]
+name = "¿Cómo funciona la XP por rol?"
+value = """
+Puedes configurar 5 roles específicos para ganar XP. *Los Patreons de nivel 2 o superior pueden configurar 15 roles.*
+
+Si tu XP por mensaje predeterminado es 3, pero otro rol tiene su XP por mensaje configurado en 5, todos los usuarios con ese rol ganarán 5 XP por mensaje. Los usuarios con roles con más XP recibirán la mayor cantidad de XP para esos roles.
+
+**¡Los roles de XP no se acumulan! Se seleccionará la XP con la estadística __más alta.__**"""

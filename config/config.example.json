@@ -1,0 +1,43 @@
+{
+  "supportServer": {
+    "id": "000000000000000000",
+    "invite": "https://discord.gg/your-invite",
+    "patreonRoles": [
+      {
+        "tier": 1,
+        "id": "000000000000000001"
+      }
+    ]
+  },
+  "patreon": {
+    "tiers": [
+      {
+        "tier": 1,
+        "id": "0000000",
+        "discordRole": "000000000000000001"
+      }
+    ]
+  },
+  "disablePatreon": true,
+  "developmentServers": ["000000000000000000"],
+  "emoji": {
+    "level": "",
+    "activityrank": "",
+    "yes": "",
+    "no": "",
+    "deleteduser": "",
+    "deletedchannel": "",
+    "message": "",
+    "voice": "",
+    "invite": "",
+    "upvote": "",
+    "bonus": "",
+    "store": "",
+    "leaderboard": "",
+    "rank": ""
+  },
+  "staffEntitlements": {
+    "000000000000000000": "DEVELOPER"
+  },
+  "LogWebhook": ""
+}

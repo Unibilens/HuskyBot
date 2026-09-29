@@ -1,0 +1,4 @@
+CREATE DATABASE IF NOT EXISTS activityrank;
+CREATE USER 'aktifim'@'%' IDENTIFIED BY 'aktifim123';
+GRANT ALL ON *.* TO 'aktifim'@'%';
+FLUSH PRIVILEGES;

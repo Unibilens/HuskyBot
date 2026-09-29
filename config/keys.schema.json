@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "botAuth": {
+      "description": "The Discord token of the bot",
+      "type": "string"
+    },
+    "botId": {
+      "description": "The Discord ID of the bot",
+      "examples": [
+        "774660568728469585",
+        "1398036663078486047",
+        "905898879785005106"
+      ],
+      "allOf": [{ "$ref": "#/definitions/Snowflake" }]
+    },
+    "dblApiKey": {
+      "description": "The Discord Bot List API key",
+      "type": "string"
+    },
+    "patreonAccessToken": {
+      "description": "The Patreon API token",
+      "type": "string"
+    },
+    "managerApiAuth": {
+      "description": "The token required by the Manager API",
+      "type": "string"
+    },
+    "managerApiHost": {
+      "description": "The host of the internal API",
+      "type": "string"
+    },
+    "managerApiPort": {
+      "description": "The port of the internal API",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 65535
+    },
+    "managerHost": {
+      "description": "The host of the Manager Database",
+      "type": "string"
+    },
+    "managerDb": {
+      "description": "Properties concerning manager DB connections",
+      "type": "object",
+      "properties": {
+        "dbUser": {
+          "description": "The username to use while connecting to the database",
+          "example": "activityrank",
+          "type": "string"
+        },
+        "dbPassword": {
+          "description": "The password to use while connecting to the database",
+          "type": "string"
+        },
+        "dbName": {
+          "description": "The name of the database to connect to",
+          "example": "dbShard",
+          "type": "string"
+        }
+      },
+      "required": ["dbUser", "dbPassword", "dbName"],
+      "additionalProperties": false
+    },
+    "shardDb": {
+      "description": "Properties concerning shard DB connections",
+      "type": "object",
+      "properties": {
+        "dbUser": {
+          "description": "The username to use while connecting to the database",
+          "example": "activityrank",
+          "type": "string"
+        },
+        "dbPassword": {
+          "description": "The password to use while connecting to the database",
+          "type": "string"
+        },
+        "dbName": {
+          "description": "The name of the database to connect to",
+          "example": "dbShard",
+          "type": "string"
+        }
+      },
+      "required": ["dbUser", "dbPassword", "dbName"],
+      "additionalProperties": false
+    },
+    "proxy": {
+      "description": "A proxy server to route Discord REST API requests through",
+      "anyOf": [{ "type": "string", "format": "uri" }, { "type": "null" }]
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Snowflake": {
+      "id": "Snowflake",
+      "description": "A Discord \"Snowflake\" (<https://discord.com/developers/docs/reference#snowflakes>), represented as a string.",
+      "examples": [
+        "774660568728469585",
+        "1398036663078486047",
+        "905898879785005106"
+      ],
+      "type": "string",
+      "pattern": "^\\d{17,20}$"
+    }
+  }
+}
