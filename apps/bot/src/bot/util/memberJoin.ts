@@ -61,7 +61,7 @@ async function autoPostServerJoin(member: GuildMember, roleAssignmentString: str
     .setTitle(member.user.username)
     .setColor(0x36608e)
     .setDescription(welcomeMessage)
-    .setThumbnail(member.user.avatarURL());
+    .setThumbnail(member.displayAvatarURL());
 
   try {
     await channel.send({
