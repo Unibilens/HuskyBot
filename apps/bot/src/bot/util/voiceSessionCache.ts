@@ -23,7 +23,11 @@ export async function endAndReportVoiceSession(member: GuildMember) {
   if (session.xpEarned <= 0 || session.minutesEarned <= 0) return;
 
   const durationMs = Date.now() - session.joinTime;
-  const durationMin = Math.floor(durationMs / 60000);
+  // Ensure displayed duration is never less than the voice minutes credited (minutesEarned)
+  const durationMin = Math.max(session.minutesEarned, Math.floor(durationMs / 60000));
+
+  // If duration is less than 1 minute, don't send anything
+  if (durationMin < 1) return;
 
   // Format total XP. Ensure it is nicely rounded if it has decimals.
   const totalXpStr = session.xpEarned % 1 === 0 ? session.xpEarned.toString() : session.xpEarned.toFixed(1);
@@ -48,7 +52,7 @@ export async function endAndReportVoiceSession(member: GuildMember) {
     durationText += `${remainingMins} ${remainingMins === 1 ? 'minute' : 'minutes'}`;
   }
   if (!durationText) {
-    durationText = `${durationMin} minutes`;
+    durationText = `${durationMin} ${durationMin === 1 ? 'minute' : 'minutes'}`;
   }
 
   const embed = new EmbedBuilder()
