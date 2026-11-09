@@ -1,18 +1,30 @@
+<div align="center">
+
 # Husky Bot
 
-A Free, modern, powerful, and feature-rich Discord activity tracking and leveling bot.
+A free, modern, powerful, and feature-rich Discord activity tracking and leveling bot.
 
-Husky monitors server activity, calculates voice and text experience points (XP), automatically assigns level-based roles, displays real-time server stats, and maintains auto-updating persistent channel leaderboards.
+[![Discord Invite](https://img.shields.io/badge/Invite%20to%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://bilendev.net/invite)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge)](LICENSE)
+
+<p align="center">
+  Husky monitors server activity, calculates voice and text experience points (XP), automatically assigns level-based roles, displays real-time server stats, and maintains auto-updating persistent channel leaderboards.
+</p>
+
+</div>
 
 ---
 
 ## How to use
 
-> If you want to use the bot, invite it to your Discord server [this link.](https://bilendev.net/invite)
+> [!TIP]
+> Ready to track activity on your server? **[Click here to invite Husky Bot](https://bilendev.net/invite)** directly with the required permissions.
+
+---
 
 ## Features
 
-> **100% Free & Open-Source:** Every single feature is available completely free of charge no subscriptions, no paywalls, and no hidden fees. (for now)
+> **100% Free & Open-Source:** Every single feature is available completely free of charge — no subscriptions, no paywalls, and no hidden fees.
 
 - **Text & Voice XP Tracking:** Real-time XP rewards for active chatters and voice channel members.
 - **Dynamic Leaderboards:** Real-time `/top` command with active member filtering and persistent auto-updating channel leaderboards via webhooks.
