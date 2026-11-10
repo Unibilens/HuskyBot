@@ -28,7 +28,7 @@ export default async (shardManager: ShardingManager) => {
   // of a restart/respawn do not trigger unhandled error logs in scheduler.
   const shards = await shardManager.broadcastEval(_save);
 
-  const ip = isProduction ? await publicIpv4() : privateIpv4();
+  const ip = isProduction ? await getPublicIp() : privateIpv4();
 
   const dataShards = shards.map((shard) => ({
     ...shard,
@@ -58,6 +58,32 @@ export default async (shardManager: ShardingManager) => {
     }))
     .executeTakeFirstOrThrow();
 };
+
+const PUBLIC_IP_TTL_MS = 60 * 60 * 1000;
+const PUBLIC_IP_TIMEOUT_MS = 10_000;
+let cachedPublicIp: { ip: string; fetchedAt: number } | null = null;
+
+/**
+ * Returns the public IP, cached for an hour. If a refresh fails (e.g. ipify
+ * timeout), the last known IP is reused so the shard health is still saved.
+ */
+async function getPublicIp(): Promise<string> {
+  const now = Date.now();
+  if (cachedPublicIp && now - cachedPublicIp.fetchedAt < PUBLIC_IP_TTL_MS) {
+    return cachedPublicIp.ip;
+  }
+
+  try {
+    const ip = await publicIpv4({ timeout: PUBLIC_IP_TIMEOUT_MS });
+    cachedPublicIp = { ip, fetchedAt: now };
+    return ip;
+  } catch (err) {
+    if (cachedPublicIp) {
+      return cachedPublicIp.ip;
+    }
+    throw err;
+  }
+}
 
 function privateIpv4(): string {
   for (const addressList of Object.values(networkInterfaces())) {
