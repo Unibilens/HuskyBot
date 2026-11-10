@@ -43,7 +43,12 @@ export async function updateLeaderboards(client: Client) {
       continue;
     }
 
-    await updateLeaderboard(rest, guild);
+    // a failure in one guild must not prevent the remaining guilds from updating
+    try {
+      await updateLeaderboard(rest, guild);
+    } catch (err) {
+      client.logger.warn({ err, guildId: guild.id }, 'Error in updateLeaderboards');
+    }
   }
 }
 
