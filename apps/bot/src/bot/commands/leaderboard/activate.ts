@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType, MessageFlags } from 'discord.js';
+import { ButtonStyle, ComponentType, MessageFlags, PermissionFlagsBits } from 'discord.js';
 import invariant from 'tiny-invariant';
 import { command } from '#bot/commands.ts';
 import { produceToplistMessage, serializeWebhook } from '#bot/cron/updateLeaderboards.ts';
@@ -45,6 +45,16 @@ export default command({
     await interaction.deferReply();
 
     invariant(options.channel.isTextBased() && !options.channel.isThread());
+
+    // the target channel may differ from the channel the command was used in
+    const me = interaction.guild.members.me ?? (await interaction.guild.members.fetchMe());
+    if (!options.channel.permissionsFor(me).has(PermissionFlagsBits.ManageWebhooks)) {
+      await interaction.followUp({
+        content: `I need the **Manage Webhooks** permission in ${options.channel.toString()} to create a leaderboard. Please grant it and run the command again.`,
+        flags: MessageFlags.Ephemeral,
+      });
+      return;
+    }
 
     const hook = await options.channel.createWebhook({
       name: 'Leaderboard',
